@@ -413,7 +413,12 @@ function refresh() {
 }
 
 // Our photos: 7T1A7269–7T1A7334 in shooting order; 7298–7312 are landscape (3:2), the rest portrait (2:3).
-for (let n = 7269; n <= 7334; n++) {
+// The group photo leads the gallery. To pick a different one, change this number
+// (other full-group shots: 7298, 7299, 7301, 7309, 7310, 7311, 7312).
+const FIRST = 7300;
+const order = [FIRST];
+for (let n = 7269; n <= 7334; n++) if (n !== FIRST) order.push(n);
+for (const n of order) {
   const f = '7T1A' + n + '.jpg';
   addItem({ thumb: 'thumbs/' + f, full: 'photos/' + f, ar: n >= 7298 && n <= 7312 ? 1.5 : 0.6667 }, g);
 }
