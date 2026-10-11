@@ -257,6 +257,8 @@
   .btn.go { background: var(--pink); color: #fff; }
   .btn.go:hover { background: #ff5596; }
   .btn:disabled { opacity: .45; cursor: default; transform: none; }
+  .admin-link { margin-top: 18px; padding: 8px 12px; border: 0; background: none; color: var(--muted); font: inherit; font-size: 12px; text-decoration: underline; cursor: pointer; opacity: .7; }
+  .adminbar { padding: 14px 16px; font-size: 16px; box-shadow: 0 4px 16px #0008; }
 </style>
 </head>
 <body>
@@ -316,6 +318,7 @@
     Download full-size photos
   </a>
   <div>Originals are in the shared Google Drive folder. Go Knights! 🌴</div>
+  <button type="button" id="admin-link" class="admin-link">Admin</button>
 </footer>
 
 <button class="btn fab" type="button" data-add><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add photos</button>
@@ -576,11 +579,17 @@ $('form').addEventListener('submit', async e => {
 });
 
 /* ---------- Removing photos (open the site with #admin on the end of the address) ---------- */
-if (location.hash === '#admin') {
+function adminMode(force) {
+  if (force !== true && location.hash !== '#admin' && !/[?&]admin\b/.test(location.search)) return;
   document.body.classList.add('admin');
   $('admin').hidden = false;
-  $('admin-code').value = store.get('hoco-admin');
+  if (!$('admin-code').value) $('admin-code').value = store.get('hoco-admin');
+  scrollTo(0, 0);
+  $('admin-code').focus();
 }
+adminMode();
+addEventListener('hashchange', adminMode);
+$('admin-link').addEventListener('click', () => adminMode(true));
 async function removePhoto(p, btn) {
   if (btn.dataset.sure !== '1') { btn.dataset.sure = '1'; btn.textContent = 'Tap again to remove'; return; }
   const code = $('admin-code').value.trim();
